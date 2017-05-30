@@ -1,0 +1,8 @@
+<component name="org.nuxeo.s3.sample.operation">
+
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+    point="operations">
+    <operation class="org.nuxeo.sample.s3.doc.importer.CreateDocumentFromS3Blob" />
+  </extension>
+  
+</component>

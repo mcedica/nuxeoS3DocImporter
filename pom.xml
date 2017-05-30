@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  
+
   <groupId>org.nuxeo.sample.s3.doc</groupId>
   <artifactId>nuxeoS3DocImporter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <name>nuxeoS3DocImporter</name>
   <description>
     
   </description>
 
-    <dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.nuxeo.ecm.distribution</groupId>
-          <artifactId>nuxeo-distribution</artifactId>
-          <scope>import</scope>
-          <type>pom</type>
-          <version>6.0-HF21</version>
-        </dependency>
-      </dependencies>
-    </dependencyManagement>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.nuxeo.ecm.distribution</groupId>
+        <artifactId>nuxeo-distribution</artifactId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>7.10-HF25</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
 
@@ -60,22 +60,22 @@
       <groupId>org.nuxeo.ecm.automation</groupId>
       <artifactId>nuxeo-automation-core</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-binarymanager-s3</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-storage</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-storage-sql</artifactId>
     </dependency>
-   
+
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
@@ -103,6 +103,20 @@
           <classpathContainers>
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
           </classpathContainers>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>          <!-- Newer versions don't build the expected MANIFEST.MF -->
+        <version>2.3.1</version>
+        <configuration>
+          <archive>
+            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+            <manifestEntries>
+              <Bundle-Version>${project.version}-t${buildNumber}</Bundle-Version>
+              <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+            </manifestEntries>
+          </archive>
         </configuration>
       </plugin>
     </plugins>
@@ -156,4 +170,4 @@
     </pluginRepository>
   </pluginRepositories>
 
-        </project>
+</project>

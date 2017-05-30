@@ -8,17 +8,16 @@ import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.collectors.DocumentModelCollector;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.repository.RepositoryManager;
-import org.nuxeo.ecm.core.storage.StorageBlob;
-import org.nuxeo.ecm.core.storage.binary.BinaryManagerService;
-import org.nuxeo.ecm.core.storage.binary.CachingBinaryManager;
-import org.nuxeo.ecm.core.storage.binary.LazyBinary;
+import org.nuxeo.ecm.core.blob.BlobManager;
+import org.nuxeo.ecm.core.blob.binary.BinaryBlob;
+import org.nuxeo.ecm.core.blob.binary.CachingBinaryManager;
+import org.nuxeo.ecm.core.blob.binary.LazyBinary;
 import org.nuxeo.runtime.api.Framework;
 
 /**
  * Creates a document pointing to an existing blob in the configured binary manager
  */
-@Operation(id = CreateDocumentFromS3Blob.ID, category = Constants.CAT_DOCUMENT, label = "Create", description = "")
+@Operation(id = CreateDocumentFromS3Blob.ID, category = Constants.CAT_DOCUMENT, label = "Create doc from S3", description = "")
 public class CreateDocumentFromS3Blob {
 
     public static final String ID = "CreateDocumentFromS3Blob";
@@ -36,7 +35,7 @@ public class CreateDocumentFromS3Blob {
     protected String digest;
 
     @Param(name = "length")
-    protected Long length;
+    protected long length;
 
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) throws Exception {
@@ -46,11 +45,13 @@ public class CreateDocumentFromS3Blob {
         }
         DocumentModel newDoc = session.createDocumentModel(doc.getPathAsString(), filename, "File");
         newDoc = session.createDocument(newDoc);
-        StorageBlob sb = new StorageBlob(new LazyBinary(digest, Framework.getLocalService(RepositoryManager.class)
-                                                                         .getDefaultRepositoryName(),
-                (CachingBinaryManager) Framework.getLocalService(BinaryManagerService.class).getBinaryManager(
-                        Framework.getLocalService(RepositoryManager.class).getDefaultRepositoryName())), filename,
-                mimeType, null, digest, length);
+
+        LazyBinary lazyBinary = new LazyBinary(digest, session.getRepositoryName(),
+                (CachingBinaryManager) Framework.getService(BlobManager.class)
+                                                .getBlobProvider(session.getRepositoryName())
+                                                .getBinaryManager());
+
+        BinaryBlob sb = new BinaryBlob(lazyBinary, digest, filename, mimeType, null, digest, length);
         newDoc.setPropertyValue("file:content", sb);
         newDoc.setPropertyValue("dc:title", filename);
         return session.saveDocument(newDoc);
