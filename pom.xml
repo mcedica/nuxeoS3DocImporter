@@ -19,7 +19,7 @@
         <artifactId>nuxeo-distribution</artifactId>
         <scope>import</scope>
         <type>pom</type>
-        <version>7.10-HF25</version>
+        <version>7.10</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
